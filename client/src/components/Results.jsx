@@ -1,0 +1,115 @@
+function Results({ data, onReset }) {
+  const scoreColor = data.overallScore >= 70 ? 'text-green-500' :
+    data.overallScore >= 50 ? 'text-yellow-500' : 'text-red-500'
+
+  const scoreBg = data.overallScore >= 70 ? 'from-green-400 to-emerald-500' :
+    data.overallScore >= 50 ? 'from-yellow-400 to-orange-400' : 'from-red-400 to-rose-500'
+
+  const scoreLabel = data.overallScore >= 70 ? 'Excellent Resume! 🚀' :
+    data.overallScore >= 50 ? 'Good Resume 👍' : 'Needs Improvement 💪'
+
+  return (
+    <div className="max-w-4xl mx-auto mt-10 px-6 pb-16">
+
+      {/* Score Card */}
+      <div className={`bg-gradient-to-r ${scoreBg} rounded-2xl p-8 mb-6 text-white shadow-lg`}>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-white/80 text-sm font-medium uppercase tracking-wide">Overall Score</p>
+            <div className="text-7xl font-black mt-1">{data.overallScore}</div>
+            <p className="text-white/90 font-semibold text-lg mt-1">{scoreLabel}</p>
+            <p className="text-white/70 text-sm mt-2 max-w-sm">{data.summary}</p>
+          </div>
+          <div className="text-8xl opacity-20">📊</div>
+        </div>
+
+        {/* Score Bar */}
+        <div className="mt-6 bg-white/20 rounded-full h-3">
+          <div
+            className="bg-white h-3 rounded-full transition-all duration-1000"
+            style={{ width: `${data.overallScore}%` }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Experience + Skills */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm col-span-1">
+          <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">Experience</p>
+          <p className="text-2xl font-bold text-gray-800">{data.experience}</p>
+        </div>
+        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm col-span-2">
+          <p className="text-gray-400 text-xs uppercase tracking-wide mb-3">Skills Detected</p>
+          <div className="flex flex-wrap gap-2">
+            {data.skills.map((skill, i) => (
+              <span key={i} className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-medium border border-blue-100">
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Strengths and Weaknesses */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+          <h3 className="font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <span className="w-7 h-7 bg-green-100 rounded-lg flex items-center justify-center text-sm">✅</span>
+            Strengths
+          </h3>
+          <ul className="space-y-3">
+            {data.strengths.map((s, i) => (
+              <li key={i} className="flex gap-2 text-sm text-gray-600">
+                <span className="text-green-500 mt-0.5">•</span>
+                {s}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+          <h3 className="font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <span className="w-7 h-7 bg-red-100 rounded-lg flex items-center justify-center text-sm">⚠️</span>
+            Weaknesses
+          </h3>
+          <ul className="space-y-3">
+            {data.weaknesses.map((w, i) => (
+              <li key={i} className="flex gap-2 text-sm text-gray-600">
+                <span className="text-red-400 mt-0.5">•</span>
+                {w}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Suggestions */}
+      <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm mb-6">
+        <h3 className="font-bold text-gray-700 mb-4 flex items-center gap-2">
+          <span className="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center text-sm">💡</span>
+          AI Suggestions to Improve
+        </h3>
+        <ol className="space-y-3">
+          {data.suggestions.map((s, i) => (
+            <li key={i} className="flex gap-3 text-sm text-gray-600 bg-gray-50 rounded-xl p-3">
+              <span className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">
+                {i + 1}
+              </span>
+              {s}
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      {/* Reset Button */}
+      <button
+        onClick={onReset}
+        className="w-full py-3 border-2 border-gray-200 rounded-xl text-gray-500 hover:bg-gray-50 hover:border-gray-300 transition-all font-medium"
+      >
+        ← Analyze Another Resume
+      </button>
+
+    </div>
+  )
+}
+
+export default Results
