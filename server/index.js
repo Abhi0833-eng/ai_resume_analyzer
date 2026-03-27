@@ -5,7 +5,12 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ 
+  origin: [
+    'http://localhost:5173',
+    'https://ai-resume-analyzer-phi-lilac.vercel.app'
+  ]
+}));
 app.use(helmet());
 app.use(express.json());
 
