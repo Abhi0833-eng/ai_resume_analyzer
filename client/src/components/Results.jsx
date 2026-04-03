@@ -1,6 +1,22 @@
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+
 function Results({ data, onReset }) {
-  const scoreColor = data.overallScore >= 70 ? 'text-green-500' :
-    data.overallScore >= 50 ? 'text-yellow-500' : 'text-red-500'
+  const [mlData, setMlData] = useState(null)
+
+  useEffect(() => {
+    const fetchMLPrediction = async () => {
+      try {
+        const res = await axios.post('http://localhost:5001/predict', data)
+        if (res.data.success) {
+          setMlData(res.data)
+        }
+      } catch (err) {
+        console.log('ML API not available')
+      }
+    }
+    fetchMLPrediction()
+  }, [data])
 
   const scoreBg = data.overallScore >= 70 ? 'from-green-400 to-emerald-500' :
     data.overallScore >= 50 ? 'from-yellow-400 to-orange-400' : 'from-red-400 to-rose-500'
@@ -22,7 +38,6 @@ function Results({ data, onReset }) {
           </div>
           <div className="text-8xl opacity-20">📊</div>
         </div>
-
         {/* Score Bar */}
         <div className="mt-6 bg-white/20 rounded-full h-3">
           <div
@@ -31,6 +46,37 @@ function Results({ data, onReset }) {
           ></div>
         </div>
       </div>
+
+      {/* ML Prediction Card */}
+      {mlData && (
+        <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 mb-6 text-white shadow-lg">
+          <h3 className="font-bold text-lg mb-4">🤖 ML Model Predictions</h3>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="text-center">
+              <div className="text-3xl font-black">{mlData.mlScore}</div>
+              <p className="text-white/70 text-xs mt-1">ML Score</p>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-black">{mlData.finalScore}</div>
+              <p className="text-white/70 text-xs mt-1">Final Score</p>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-black">{mlData.interviewProbability}%</div>
+              <p className="text-white/70 text-xs mt-1">Interview Chance</p>
+            </div>
+          </div>
+          <div className="mt-4 bg-white/20 rounded-xl p-3 text-center">
+            <p className="font-semibold">Selection Probability:
+              <span className={`ml-2 px-3 py-1 rounded-full text-sm ${
+                mlData.selectionChance === 'High' ? 'bg-green-400' :
+                mlData.selectionChance === 'Medium' ? 'bg-yellow-400' : 'bg-red-400'
+              }`}>
+                {mlData.selectionChance}
+              </span>
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Experience + Skills */}
       <div className="grid grid-cols-3 gap-4 mb-6">
