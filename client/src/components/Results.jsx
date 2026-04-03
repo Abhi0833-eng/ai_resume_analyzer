@@ -7,7 +7,7 @@ function Results({ data, onReset }) {
   useEffect(() => {
     const fetchMLPrediction = async () => {
       try {
-        const res = await axios.post('http://localhost:5001/predict', data)
+        const res = await axios.post('https://resumeradar-ml.onrender.com/predict', data)
         if (res.data.success) {
           setMlData(res.data)
         }
