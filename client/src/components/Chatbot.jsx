@@ -35,7 +35,7 @@ function Chatbot({ resumeData }) {
         - Weaknesses: ${resumeData.weaknesses?.join(', ')}
       ` : 'No resume uploaded yet.'
 
-      const res = await axios.post('https://ai-resume-analyzer-oenr.onrender.com/api/resume/chat', {
+      const res = await axios.post('https://resumeradar-backend-gvh7.onrender.com/api/resume/chat', {
         message: input,
         resumeContext,
         history: messages

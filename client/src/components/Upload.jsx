@@ -41,7 +41,7 @@ function Upload({ onResult }) {
     formData.append('resume', file)
 
     try {
-      const res = await axios.post('https://ai-resume-analyzer-oenr.onrender.com/api/resume/analyze', formData, {
+      const res = await axios.post('https://resumeradar-backend-gvh7.onrender.com/api/resume/analyze', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       clearInterval(interval)

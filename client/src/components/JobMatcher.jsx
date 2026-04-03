@@ -21,7 +21,7 @@ function JobMatcher({ resumeText, onResult }) {
     setError('')
 
     try {
-      const res = await axios.post('https://ai-resume-analyzer-oenr.onrender.com/api/resume/match', {
+      const res = await axios.post('https://resumeradar-backend-gvh7.onrender.com/api/resume/match', {
         resumeText,
         jobDescription
       })
