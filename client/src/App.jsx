@@ -4,6 +4,7 @@ import Upload from './components/Upload'
 import Results from './components/Results'
 import JobMatcher from './components/JobMatcher'
 import JobMatchResults from './components/JobMatchResults'
+import Chatbot from './components/Chatbot'
 
 function App() {
   const [result, setResult] = useState(null)
@@ -74,6 +75,7 @@ function App() {
           <JobMatcher resumeText={resumeText} onResult={handleJobMatchResult} />
         )
       )}
+    <Chatbot resumeData={result} />
     </div>
   )
 }

@@ -95,3 +95,43 @@ exports.matchJob = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
+// Chat with AI Career Assistant
+exports.chat = async (req, res) => {
+  try {
+    const { message, resumeContext, history } = req.body;
+
+    const systemPrompt = `You are an expert AI Career Assistant called ResumeRadar Assistant. 
+    You help people improve their resumes, find jobs, and give career advice.
+    You are friendly, professional, and give specific actionable advice.
+    Keep responses concise and helpful (max 3-4 sentences).
+    
+    Current user's resume context:
+    ${resumeContext}`;
+
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...history.slice(-6).map(m => ({
+        role: m.role,
+        content: m.content
+      })),
+      { role: 'user', content: message }
+    ];
+
+    const response = await groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages,
+      max_tokens: 300,
+      temperature: 0.7,
+    });
+
+    const reply = response.choices[0].message.content;
+    res.json({ success: true, reply });
+
+  } catch (err) {
+    console.error('Chat ERROR:', err.message);
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+  
