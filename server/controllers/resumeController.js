@@ -37,7 +37,7 @@ exports.analyzeResume = async (req, res) => {
 
     const prompt = `You are a professional resume reviewer. Analyze this resume and return a JSON object with exactly these fields:
     - overallScore (number 0-100)
-    - skills (array of strings)
+    - skills (array of strings, extract ALL technical skills, programming languages, frameworks, tools, soft skills, and domain knowledge mentioned ANYWHERE in the resume including projects, experience, and skills sections. Be thorough and extract every single skill mentioned.)
     - experience (string, look at actual work experience or internships in resume. If no experience found write "Fresher". If internship found write "Fresher (Internship Experience)". Only write years if actual full-time job experience exists.)
     - strengths (array of 3 strings)
     - weaknesses (array of 3 strings)
