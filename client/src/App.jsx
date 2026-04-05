@@ -11,23 +11,26 @@ function App() {
   const [activeTab, setActiveTab] = useState('analyze')
   const [jobMatchResult, setJobMatchResult] = useState(null)
   const [resumeText, setResumeText] = useState('')
+  const [jobDescription, setJobDescription] = useState('')
 
   const handleResult = (data, text) => {
     setResult(data)
-    setResumeText(text || 'resume uploaded')
-    console.log('Resume text received:', text ? 'YES' : 'NO')
+    setResumeText(text || '')
+    console.log('Resume text length:', text ? text.length : 0)
   }
 
   const handleReset = () => {
     setResult(null)
   }
 
-  const handleJobMatchResult = (data) => {
+  const handleJobMatchResult = (data, jd) => {
     setJobMatchResult(data)
+    setJobDescription(jd)
   }
 
   const handleJobMatchReset = () => {
     setJobMatchResult(null)
+    setJobDescription('')
   }
 
   return (
@@ -53,7 +56,6 @@ function App() {
           </button>
         </div>
 
-        {/* Show resume status */}
         {resumeText ? (
           <p className="text-green-600 text-sm mt-2 font-medium">✅ Resume loaded and ready for matching</p>
         ) : (
@@ -70,12 +72,18 @@ function App() {
         )
       ) : (
         jobMatchResult ? (
-          <JobMatchResults data={jobMatchResult} onReset={handleJobMatchReset} />
+          <JobMatchResults
+            data={jobMatchResult}
+            onReset={handleJobMatchReset}
+            resumeText={resumeText}
+            jobDescription={jobDescription}
+          />
         ) : (
           <JobMatcher resumeText={resumeText} onResult={handleJobMatchResult} />
         )
       )}
-    <Chatbot resumeData={result} />
+
+      <Chatbot resumeData={result} />
     </div>
   )
 }

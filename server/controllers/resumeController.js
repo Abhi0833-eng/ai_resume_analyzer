@@ -134,4 +134,42 @@ exports.chat = async (req, res) => {
   }
 };
 
+// Generate SOP
+exports.generateSOP = async (req, res) => {
+  try {
+    const { resumeText, jobDescription, userName } = req.body;
+
+    const prompt = `You are an expert career counselor. Generate a professional Statement of Purpose (SOP) / Cover Letter based on this resume and job description.
+
+    The SOP should:
+    - Be 3-4 paragraphs long
+    - Start with a strong opening about interest in the role
+    - Highlight relevant skills and experience from the resume
+    - Connect the candidate's background to the job requirements
+    - End with a confident closing statement
+    - Sound natural and personalized, not generic
+    - Be ready to use directly
+
+    Candidate Name: ${userName || 'the candidate'}
+    
+    Resume: ${resumeText}
+    Job Description: ${jobDescription}
+
+    Generate ONLY the SOP text, no extra commentary.`;
+
+    const response = await groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 1000,
+      temperature: 0.7,
+    });
+
+    const sop = response.choices[0].message.content;
+    res.json({ success: true, sop });
+
+  } catch (err) {
+    console.error('SOP ERROR:', err.message);
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
   

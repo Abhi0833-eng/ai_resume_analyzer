@@ -25,7 +25,7 @@ function JobMatcher({ resumeText, onResult }) {
         resumeText,
         jobDescription
       })
-      onResult(res.data.data)
+      onResult(res.data.data, jobDescription)
     } catch (err) {
       setError('Failed to match. Please try again.')
     } finally {
