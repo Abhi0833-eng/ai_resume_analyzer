@@ -56,6 +56,8 @@ exports.analyzeResume = async (req, res) => {
 
     const rawText = response.choices[0].message.content;
     const parsed = JSON.parse(rawText);
+    console.log('Resume text length:', text.length);
+    console.log('Resume text preview:', text.substring(0, 200));
     res.json({ success: true, data: parsed, resumeText: text });
 
   } catch (err) {
