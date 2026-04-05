@@ -5,13 +5,11 @@ require('dotenv').config();
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-// Extract text from PDF using pdfjs-dist
 async function extractPdfText(filePath) {
   try {
-    const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+    const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs');
     const data = new Uint8Array(fs.readFileSync(filePath));
-    const loadingTask = pdfjsLib.getDocument({ data });
-    const pdf = await loadingTask.promise;
+    const pdf = await getDocument({ data }).promise;
     
     let fullText = '';
     for (let i = 1; i <= pdf.numPages; i++) {
@@ -22,7 +20,6 @@ async function extractPdfText(filePath) {
     }
     
     console.log('Extracted text length:', fullText.length);
-    console.log('Preview:', fullText.substring(0, 200));
     return fullText;
   } catch (err) {
     console.error('PDF extraction error:', err.message);
