@@ -1,31 +1,33 @@
 const fs = require('fs');
 const mammoth = require('mammoth');
-const PDFParser = require('pdf2json');
 const Groq = require('groq-sdk');
 require('dotenv').config();
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-// Extract text from PDF
-function extractPdfText(filePath) {
-  return new Promise((resolve, reject) => {
-    const pdfParser = new PDFParser(null, 1);
-    pdfParser.on('pdfParser_dataError', err => reject(err));
-    pdfParser.on('pdfParser_dataReady', () => {
-      try {
-        const text = pdfParser.getRawTextContent();
-        const cleanText = decodeURIComponent(text)
-          .replace(/%20/g, ' ')
-          .replace(/\r\n/g, '\n')
-          .trim();
-        console.log('Extracted text length:', cleanText.length);
-        resolve(cleanText);
-      } catch (e) {
-        resolve('');
-      }
-    });
-    pdfParser.loadPDF(filePath);
-  });
+// Extract text from PDF using pdfjs-dist
+async function extractPdfText(filePath) {
+  try {
+    const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+    const data = new Uint8Array(fs.readFileSync(filePath));
+    const loadingTask = pdfjsLib.getDocument({ data });
+    const pdf = await loadingTask.promise;
+    
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const pageText = content.items.map(item => item.str).join(' ');
+      fullText += pageText + '\n';
+    }
+    
+    console.log('Extracted text length:', fullText.length);
+    console.log('Preview:', fullText.substring(0, 200));
+    return fullText;
+  } catch (err) {
+    console.error('PDF extraction error:', err.message);
+    return '';
+  }
 }
 
 // Extract text from uploaded file
@@ -65,8 +67,6 @@ exports.analyzeResume = async (req, res) => {
 
     const rawText = response.choices[0].message.content;
     const parsed = JSON.parse(rawText);
-    console.log('Resume text length:', text.length);
-    console.log('Resume text preview:', text.substring(0, 200));
     res.json({ success: true, data: parsed, resumeText: text });
 
   } catch (err) {

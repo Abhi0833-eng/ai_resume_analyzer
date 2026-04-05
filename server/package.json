@@ -23,6 +23,7 @@
     "nodemon": "^3.1.14",
     "openai": "^6.32.0",
     "pdf-parse": "^2.4.5",
-    "pdf2json": "^4.0.2"
+    "pdf2json": "^4.0.2",
+    "pdfjs-dist": "^5.6.205"
   }
 }
