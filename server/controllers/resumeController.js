@@ -9,11 +9,20 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 // Extract text from PDF
 function extractPdfText(filePath) {
   return new Promise((resolve, reject) => {
-    const pdfParser = new PDFParser();
+    const pdfParser = new PDFParser(null, 1);
     pdfParser.on('pdfParser_dataError', err => reject(err));
     pdfParser.on('pdfParser_dataReady', () => {
-      const text = pdfParser.getRawTextContent();
-      resolve(text);
+      try {
+        const text = pdfParser.getRawTextContent();
+        const cleanText = decodeURIComponent(text)
+          .replace(/%20/g, ' ')
+          .replace(/\r\n/g, '\n')
+          .trim();
+        console.log('Extracted text length:', cleanText.length);
+        resolve(cleanText);
+      } catch (e) {
+        resolve('');
+      }
     });
     pdfParser.loadPDF(filePath);
   });
@@ -174,4 +183,3 @@ exports.generateSOP = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
-  
